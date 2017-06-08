@@ -324,18 +324,16 @@ class BolPlazaClientTest extends TestCase
     
     /**
      * Test Get Latest Reductions Filename
-     *
-     * @todo once Bol.com adds the reduction functionality to their test environment enable these unit tests
+     */
     public function testGetLatestReductionsFilename()
     {
         $filename = $this->client->getLatestReductionsFilename();
         $this->assertNotEmpty($filename);
     }
-    */
     
     /**
      * Test Get Reductions
-     * @todo once Bol.com adds the reduction functionality to their test environment enable these unit tests
+     */
     
     public function testGetReductions()
     {
@@ -343,5 +341,4 @@ class BolPlazaClientTest extends TestCase
         $this->assertArrayHasKey('filename', $reductions);
         $this->assertArrayHasKey('result', $reductions);
     }
-     */
 }
