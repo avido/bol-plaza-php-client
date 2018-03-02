@@ -33,6 +33,6 @@ class BolPlazaReturnItem extends BaseModel {
     ];
 
     protected $nestedEntities = [
-        'CustomerDetails' => 'BolPlazaShipmentDetails',
+        'CustomerDetails' => 'BolPlazaItemCustomerDetails',
     ];
 }
