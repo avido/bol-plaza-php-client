@@ -22,7 +22,7 @@ namespace Wienkit\BolPlazaClient\Entities;
  * @param string $Company
  * @param string $VatNumber
  */
-class BolPlazaItemCustomerDetails extends BaseModel {
+class BolPlazaReturnItemCustomerDetails extends BaseModel {
 
     protected $xmlEntityName = 'CustomerDetails';
 
