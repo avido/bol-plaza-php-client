@@ -510,4 +510,22 @@ class BolPlazaClientTest extends TestCase
         $labelRequest->Productlabels = $products;
         $result = $this->client->getProductLabels($labelRequest, 'ZEBRA_Z_PERFORM_1000T');
     }
+    
+    /**
+     * Get Inbound packing list
+     * @see https://developers.bol.com/packing-list-details/
+     * Ignored, not present in sandbox 
+     * @groupXXX no-ci-test
+     * @group inbound
+     */
+    public function testGetPackinglist()
+    {
+        try {
+            $id = null;
+            $result = $this->client->getPackinglist($id);
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
 }

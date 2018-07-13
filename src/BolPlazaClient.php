@@ -411,6 +411,15 @@ class BolPlazaClient
         return $result;
     }
 
+    /**
+     * Create LvB Inbound
+     *
+     * @see https://developers.bol.com/create-inbound/
+     *
+     * @access public
+     * @param BolPlazaInboundRequest $inboundRequest
+     * @return type
+     */
     public function createInbound(BolPlazaInboundRequest $inboundRequest)
     {
         $url = '/services/rest/inbounds';
@@ -423,7 +432,7 @@ class BolPlazaClient
     
     /**
      * Get delivery windows for specific date (LvB)
-     * 
+     *
      * @see https://developers.bol.com/get-delivery-window/
      * @param \DateTime $deliveryDate
      * @param int $qty
@@ -441,8 +450,10 @@ class BolPlazaClient
     
     /**
      * Get inbound details 
-     * 
+     *
      * @see https://developers.bol.com/single-inbound/
+     * 
+     * @access public
      * @param int $id
      * @return BolPlazaInbound
      */
@@ -454,7 +465,9 @@ class BolPlazaClient
     
     /**
      * Get (Inbound) Product labels
-     * 
+     *
+     * @see https://developers.bol.com/productlabels/
+     *
      * @access public
      * @param BolPlazaInboundProductlabelsRequest $request
      * @param string $format (AVERY_J8159, AVERY_J8160, AVERY_3474, DYMO_99012, BROTHER_DK11208D, ZEBRA_Z_PERFORM_1000T)
@@ -464,6 +477,20 @@ class BolPlazaClient
     {
         $xmlData = BolPlazaDataParser::createXmlFromEntity($request, '1');
         return $this->makeRequest('POST', "/services/rest/inbounds/productlabels?format={$format}", $xmlData);
+    }
+    
+    /**
+     * Get (Inbound) Packinglist
+     *
+     * @see https://developers.bol.com/packing-list-details/
+     *
+     * @access public
+     * @param int $id
+     * @return string - pdf contents
+     */
+    public function getPackinglist($id)
+    {
+        return $this->makeRequest('GET', "/services/rest/inbounds/" . (int)$id . "/packinglistdetails");
     }
     
     /**
