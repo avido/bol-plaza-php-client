@@ -12,7 +12,7 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundFbbTransporter;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProducts;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProduct;
-use Wienkit\BolPlazaClient\Entities\BolPlazaInboundTimeSlot;
+use Wienkit\BolPlazaClient\Entities\BolPlazaDeliveryWindowTimeSlot;
 
 use Wienkit\BolPlazaClient\BolPlazaClient;
 
@@ -410,7 +410,7 @@ class BolPlazaClientTest extends TestCase
         $inboundRequest->LabellingService = false;
         
         // timeslot
-        $timeSlot = new BolPlazaInboundTimeSlot();
+        $timeSlot = new BolPlazaDeliveryWindowTimeSlot();
         $timeSlot->Start = "2017-04-08T08:00:00+02:00";
         $timeSlot->End = "2017-04-08T09:00:00+02:00";
         $inboundRequest->TimeSlot = $timeSlot;

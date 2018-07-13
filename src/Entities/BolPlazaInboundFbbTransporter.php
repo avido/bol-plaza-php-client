@@ -10,7 +10,7 @@ namespace Wienkit\BolPlazaClient\Entities;
  */
 class BolPlazaInboundFbbTransporter extends BaseModel 
 {
-    protected $xmlEntityName = 'TimeSlot';
+    protected $xmlEntityName = 'FbbTransporter';
 
     protected $attributes = [
         'Code',
