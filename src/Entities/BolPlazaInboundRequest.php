@@ -22,7 +22,7 @@ class BolPlazaInboundRequest extends BaseModel {
     ];
 
     protected $nestedEntities = [
-        'TimeSlot' => 'BolPlazaInboundTimeSlot',
+        'TimeSlot' => 'BolPlazaDeliveryWindowTimeSlot',
         'FbbTransporter' => 'BolPlazaFbbTransporter',
         'Products' => 'BolPlazaInboundProducts'
     ];
