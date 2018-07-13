@@ -8,6 +8,12 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaTransport;
 use Wienkit\BolPlazaClient\Entities\BolPlazaChangeTransportRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaReturnItemStatusUpdate;
 use Wienkit\BolPlazaClient\Entities\BolPlazaRetailerOffer;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundFbbTransporter;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProducts;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProduct;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundTimeSlot;
+
 use Wienkit\BolPlazaClient\BolPlazaClient;
 
 class BolPlazaClientTest extends TestCase
@@ -393,4 +399,47 @@ class BolPlazaClientTest extends TestCase
         $this->assertEquals(0, count($deliveryWindows));
     }
     
+    /**
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testCreateInbound()
+    {
+        $inboundRequest = new BolPlazaInboundRequest();
+        $inboundRequest->Reference = time();
+        $inboundRequest->LabellingService = false;
+        
+        // timeslot
+        $timeSlot = new BolPlazaInboundTimeSlot();
+        $timeSlot->Start = "2017-04-08T08:00:00+02:00";
+        $timeSlot->End = "2017-04-08T09:00:00+02:00";
+        $inboundRequest->TimeSlot = $timeSlot;
+        // transporter
+        $transporter = new BolPlazaInboundFbbTransporter();
+        $transporter->Code = 'DHL';
+        $transporter->Name = 'DHL';
+        $inboundRequest->FbbTransporter = $transporter;
+        
+        $products = [];
+        $product = new BolPlazaInboundProduct();
+        $product->EAN = '9789076174082';
+        $product->announcedQuantity = 10;
+        $products[] = $product;
+        
+        $product = new BolPlazaInboundProduct();
+        $product->EAN = '9789076174083';
+        $product->announcedQuantity = 11;
+        $products[] = $product;
+        
+        $inboundProducts = new BolPlazaInboundProducts();
+        $inboundProducts->Products = $products;
+        $inboundRequest->Products = $inboundProducts;
+        
+        try {
+            $result = $this->client->createInbound($inboundRequest);
+            $this->assertGreaterThan(0, $result->id);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
 }

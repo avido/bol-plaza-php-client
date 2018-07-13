@@ -19,6 +19,7 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaShipment;
 use Wienkit\BolPlazaClient\Entities\BolPlazaChangeTransportRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaShipmentRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInventory;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientException;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientRateLimitException;
 
@@ -408,6 +409,16 @@ class BolPlazaClient
         return $result;
     }
 
+    public function createInbound(BolPlazaInboundRequest $inboundRequest)
+    {
+        $url = '/services/rest/inbounds';
+        $xmlData = BolPlazaDataParser::createXmlFromEntity($inboundRequest, '1');
+        $apiResult = $this->makeRequest('POST', $url, $xmlData);
+        $result = BolPlazaDataParser::createEntityFromResponse('BolPlazaProcessStatus', $apiResult);
+        return $result;
+        
+    }
+    
     /**
      * Get delivery windows for specific date (LvB)
      * 
@@ -445,7 +456,6 @@ class BolPlazaClient
         $headers = (isset($headers) && is_array($headers)) ? $headers : [];
         
         $signature = $this->getSignature($method, $contentType, $date, $endpoint);
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
