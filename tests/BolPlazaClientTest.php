@@ -442,4 +442,19 @@ class BolPlazaClientTest extends TestCase
             $this->fail();
         }
     }
+    
+    /**
+     * Ignored, not present in sandbox 
+     * @group inbound
+     */
+    public function testGetInbound()
+    {
+        try {
+            $id = null;
+            $result = $this->client->getSingleInbound($id);
+            $this->assertGreaterThan(0, $result->Id);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
 }

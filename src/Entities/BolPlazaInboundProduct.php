@@ -15,7 +15,10 @@ class BolPlazaInboundProduct extends BaseModel
 
     protected $attributes = [
         'EAN',
-        'AnnouncedQuantity'
+        'BSKU',
+        'AnnouncedQuantity',
+        'ReceivedQuantity',
+        'State'
     ];
 
 }

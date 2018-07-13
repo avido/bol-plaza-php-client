@@ -20,6 +20,7 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaChangeTransportRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaShipmentRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInventory;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInbound;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientException;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientRateLimitException;
 
@@ -435,6 +436,19 @@ class BolPlazaClient
         ]);
         $timeSlots = BolPlazaDataParser::createCollectionFromResponse('BolPlazaDeliveryWindowTimeSlot', $apiResult);
         return $timeSlots;
+    }
+    
+    /**
+     * Get inbound details 
+     * 
+     * @see https://developers.bol.com/single-inbound/
+     * @param int $id
+     * @return BolPlazaInbound
+     */
+    public function getSingleInbound($id)
+    {
+        $apiResult = $this->makeRequest('GET', '/services/rest/inbounds/' . (int)$id);
+        return BolPlazaDataParser::createEntityFromResponse('BolPlazaInbound', $apiResult);
     }
     
     /**
