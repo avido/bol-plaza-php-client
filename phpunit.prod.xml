@@ -1,0 +1,11 @@
+<phpunit colors="true" strict="true" bootstrap="tests/autoload.php">
+    <php>
+        <env name="PHP_PUBKEY" value="Yp04czWCD1xlANmNFA3mHZImYJsaFFM9"/>
+        <env name="PHP_PRIVKEY" value="JMLlbW53XUUMkStTU4Rx6DwDo5z2nRD7rwNRaB9x2Jbzl0Wfg9TU6rxdjyNFwrsjFEuuOeqP4qIrWHOvzyiDq3dF2Fvwx29Y"/>
+    </php>
+    <testsuites>
+        <testsuite name="The project's test suite">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

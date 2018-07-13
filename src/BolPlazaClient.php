@@ -21,6 +21,7 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaShipmentRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInventory;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInbound;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProductlabelsRequest;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientException;
 use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientRateLimitException;
 
@@ -452,6 +453,20 @@ class BolPlazaClient
     }
     
     /**
+     * Get (Inbound) Product labels
+     * 
+     * @access public
+     * @param BolPlazaInboundProductlabelsRequest $request
+     * @param string $format (AVERY_J8159, AVERY_J8160, AVERY_3474, DYMO_99012, BROTHER_DK11208D, ZEBRA_Z_PERFORM_1000T)
+     * @return string - pdf contents
+     */
+    public function getProductLabels(BolPlazaInboundProductlabelsRequest $request, $format = null)
+    {
+        $xmlData = BolPlazaDataParser::createXmlFromEntity($request, '1');
+        return $this->makeRequest('POST', "/services/rest/inbounds/productlabels?format={$format}", $xmlData);
+    }
+    
+    /**
      * Makes the request to the server and processes errors
      *
      * @param string $method GET
@@ -467,6 +482,11 @@ class BolPlazaClient
         $date = gmdate('D, d M Y H:i:s T');
         $contentType = 'application/xml';
         $url = $this->getUrlFromEndpoint($endpoint);
+        
+        // set new endpoint (endpoint without arguments, signature is based on endpoint without arguments)
+        $parsedUrl = parse_url($url);
+        $endpoint = isset($parsedUrl['path']) ? $parsedUrl['path'] : $endpoint;
+        
         $headers = (isset($headers) && is_array($headers)) ? $headers : [];
         
         $signature = $this->getSignature($method, $contentType, $date, $endpoint);
@@ -575,7 +595,6 @@ class BolPlazaClient
             if ($headerInfo['http_code'] == '409') {
                 throw new BolPlazaClientRateLimitException();
             }
-
             if (!empty($result)) {
                 $xmlObject = BolPlazaDataParser::parseXmlResponse($result);
                 if (property_exists($xmlObject, 'ServiceErrors')) {
@@ -596,6 +615,9 @@ class BolPlazaClient
                 }
                 if (isset($xmlObject->ErrorCode) && !empty($xmlObject->ErrorCode)) {
                     throw new BolPlazaClientException($xmlObject->ErrorMessage, (int)$xmlObject->ErrorCode);
+                }
+                if (isset($xmlObject->errorCode) && !empty($xmlObject->errorCode)) {
+                    throw new BolPlazaClientException($xmlObject->errorMessage, (int)$xmlObject->errorCode);
                 }
             }
         }

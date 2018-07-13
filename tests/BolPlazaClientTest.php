@@ -13,8 +13,12 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaInboundFbbTransporter;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProducts;
 use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProduct;
 use Wienkit\BolPlazaClient\Entities\BolPlazaDeliveryWindowTimeSlot;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProductlabelsRequest;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProductLabel;
 
 use Wienkit\BolPlazaClient\BolPlazaClient;
+
+use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientException;
 
 class BolPlazaClientTest extends TestCase
 {
@@ -445,7 +449,7 @@ class BolPlazaClientTest extends TestCase
     
     /**
      * Ignored, not present in sandbox 
-     * @group inbound
+     * @group no-ci-test
      */
     public function testGetInbound()
     {
@@ -456,5 +460,54 @@ class BolPlazaClientTest extends TestCase
         } catch (\Exception $e) {
             $this->fail();
         }
+    }
+    
+    /**
+     * Get Product Labels
+     * @see https://developers.bol.com/productlabels/
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetProductlabels()
+    {
+        $labelRequest = new BolPlazaInboundProductlabelsRequest();
+        
+        $products = [];
+        $product = new BolPlazaInboundProductLabel();
+        $product->EAN = '8715622005341';
+        $product->Quantity = 1;
+        $products[] = $product;
+        
+        $labelRequest->Productlabels = $products;
+        
+        try {
+            $result = $this->client->getProductLabels($labelRequest, 'ZEBRA_Z_PERFORM_1000T');
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    
+    /**
+     * Test Product Labels Exception
+     * @see https://developers.bol.com/productlabels/
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetProductlabelsException()
+    {
+        $this->expectException(BolPlazaClientException::class);
+        
+        $labelRequest = new BolPlazaInboundProductlabelsRequest();
+        
+        $products = [];
+        $product = new BolPlazaInboundProductLabel();
+        $product->EAN = '0000000000000';
+        $product->Quantity = 10;
+        $products[] = $product;
+        
+        $labelRequest->Productlabels = $products;
+        $result = $this->client->getProductLabels($labelRequest, 'ZEBRA_Z_PERFORM_1000T');
     }
 }
