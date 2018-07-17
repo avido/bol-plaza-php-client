@@ -8,7 +8,17 @@ use Wienkit\BolPlazaClient\Entities\BolPlazaTransport;
 use Wienkit\BolPlazaClient\Entities\BolPlazaChangeTransportRequest;
 use Wienkit\BolPlazaClient\Entities\BolPlazaReturnItemStatusUpdate;
 use Wienkit\BolPlazaClient\Entities\BolPlazaRetailerOffer;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundRequest;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundFbbTransporter;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProducts;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProduct;
+use Wienkit\BolPlazaClient\Entities\BolPlazaDeliveryWindowTimeSlot;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProductlabelsRequest;
+use Wienkit\BolPlazaClient\Entities\BolPlazaInboundProductLabel;
+
 use Wienkit\BolPlazaClient\BolPlazaClient;
+
+use Wienkit\BolPlazaClient\Exceptions\BolPlazaClientException;
 
 class BolPlazaClientTest extends TestCase
 {
@@ -391,6 +401,147 @@ class BolPlazaClientTest extends TestCase
         $qty = 100;
         $deliveryWindows = $this->client->getDeliveryWindows($deliveryDate, $qty);
         $this->assertEquals(0, count($deliveryWindows));
+    }
+    
+    /**
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testCreateInbound()
+    {
+        $inboundRequest = new BolPlazaInboundRequest();
+        $inboundRequest->Reference = time();
+        $inboundRequest->LabellingService = false;
+        
+        // timeslot
+        $timeSlot = new BolPlazaDeliveryWindowTimeSlot();
+        $timeSlot->Start = "2017-04-08T08:00:00+02:00";
+        $timeSlot->End = "2017-04-08T09:00:00+02:00";
+        $inboundRequest->TimeSlot = $timeSlot;
+        // transporter
+        $transporter = new BolPlazaInboundFbbTransporter();
+        $transporter->Code = 'DHL';
+        $transporter->Name = 'DHL';
+        $inboundRequest->FbbTransporter = $transporter;
+        
+        $products = [];
+        $product = new BolPlazaInboundProduct();
+        $product->EAN = '9789076174082';
+        $product->announcedQuantity = 10;
+        $products[] = $product;
+        
+        $product = new BolPlazaInboundProduct();
+        $product->EAN = '9789076174083';
+        $product->announcedQuantity = 11;
+        $products[] = $product;
+        
+        $inboundProducts = new BolPlazaInboundProducts();
+        $inboundProducts->Products = $products;
+        $inboundRequest->Products = $inboundProducts;
+        
+        try {
+            $result = $this->client->createInbound($inboundRequest);
+            $this->assertGreaterThan(0, $result->id);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    /**
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetInbound()
+    {
+        try {
+            $id = null;
+            $result = $this->client->getSingleInbound($id);
+            $this->assertGreaterThan(0, $result->Id);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    /**
+     * Get Product Labels
+     * @see https://developers.bol.com/productlabels/
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetProductlabels()
+    {
+        $labelRequest = new BolPlazaInboundProductlabelsRequest();
+        
+        $products = [];
+        $product = new BolPlazaInboundProductLabel();
+        $product->EAN = '8715622005341';
+        $product->Quantity = 1;
+        $products[] = $product;
+        
+        $labelRequest->Productlabels = $products;
+        
+        try {
+            $result = $this->client->getProductLabels($labelRequest, 'ZEBRA_Z_PERFORM_1000T');
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    
+    /**
+     * Test Product Labels Exception
+     * @see https://developers.bol.com/productlabels/
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetProductlabelsException()
+    {
+        $this->expectException(BolPlazaClientException::class);
+        
+        $labelRequest = new BolPlazaInboundProductlabelsRequest();
+        
+        $products = [];
+        $product = new BolPlazaInboundProductLabel();
+        $product->EAN = '0000000000000';
+        $product->Quantity = 10;
+        $products[] = $product;
+        
+        $labelRequest->Productlabels = $products;
+        $result = $this->client->getProductLabels($labelRequest, 'ZEBRA_Z_PERFORM_1000T');
+    }
+    
+    /**
+     * Get Inbound packing list
+     * @see https://developers.bol.com/packing-list-details/
+     * Ignored, not present in sandbox 
+     * @group no-ci-test
+     */
+    public function testGetPackinglist()
+    {
+        try {
+            $id = null;
+            $result = $this->client->getPackinglist($id);
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    /**
+     * Get summarized LvB inbound-list
+     * @see https://developers.bol.com/inbound-list/
+     * Ignored, not present in sandbox
+     * @group no-ci-test
+     */
+    public function testGetInbounds()
+    {
+        try {
+            $result = $this->client->getInboundList();
+            $this->assertNotNull($result);
+        } catch (\Exception $ex) {
+            $this->fail();
+        }
     }
     
 }

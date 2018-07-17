@@ -7,7 +7,7 @@ namespace Wienkit\BolPlazaClient\Entities;
  * @package Wienkit\BolPlazaClient\Entities
  *
  * @param string $SalutationCode
- * @param string $Firstname
+ * @param string $FirstName
  * @param string $Surname
  * @param string $Streetname
  * @param string $Housenumber
@@ -22,26 +22,23 @@ namespace Wienkit\BolPlazaClient\Entities;
  * @param string $Company
  * @param string $VatNumber
  */
-class BolPlazaShipmentDetails extends BaseModel {
+class BolPlazaReturnItemCustomerDetails extends BaseModel {
 
-    protected $xmlEntityName = 'ShipmentDetails';
+    protected $xmlEntityName = 'CustomerDetails';
 
     protected $attributes = [
         'SalutationCode',
-        'Firstname',
+        'FirstName',
         'Surname',
         'Streetname',
         'Housenumber',
         'HousenumberExtended',
-        'AddressSupplement',
-        'ExtraAddressInformation',
         'ZipCode',
         'City',
         'CountryCode',
         'Email',
         'DeliveryPhoneNumber',
         'Company',
-        'VatNumber'
     ];
 
 }
