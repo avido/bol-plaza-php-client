@@ -35,7 +35,7 @@ class BolPlazaClientTest extends TestCase
         $privateKey = getenv('PHP_PRIVKEY');
 
         $this->client = new BolPlazaClient($publicKey, $privateKey);
-        $this->client->setTestMode(false);
+        $this->client->setTestMode(true);
     }
 
     public function testOrderRetrieve()
@@ -529,7 +529,10 @@ class BolPlazaClientTest extends TestCase
     }
     
     /**
-     * @group inbound
+     * Get summarized LvB inbound-list
+     * @see https://developers.bol.com/inbound-list/
+     * Ignored, not present in sandbox
+     * @group no-ci-test
      */
     public function testGetInbounds()
     {
