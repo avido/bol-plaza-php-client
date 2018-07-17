@@ -494,6 +494,35 @@ class BolPlazaClient
     }
     
     /**
+     * Get Inbound list
+     * 
+     * @see https://developers.bol.com/inbound-list/
+     *
+     * @access public
+     * @param int $page
+     * @return BolPlazaInbound[]
+     */
+    public function getInboundList($page = 1)
+    {
+        $apiResult = $this->makeRequest('GET', '/services/rest/inbounds', [
+            'page' => (int)$page
+        ]);
+        $xml = BolPlazaDataParser::parseXmlResponse($apiResult);
+        // parse inbound elements.
+        if ($xml->Inbound) {
+            $inbounds = [];
+            foreach ($xml->Inbound as $simpleXmlInbound) {
+                $inbounds[] = BolPlazaDataParser::createEntityFromResponse('BolPlazaInbound', $simpleXmlInbound);
+            }
+        }
+        $result = BolPlazaDataParser::createEntityFromResponse('BolPlazaInbounds', $apiResult);
+        // copy actual inbounds
+        $result->Inbound = $inbounds;
+        return $result;
+        
+    }
+    
+    /**
      * Makes the request to the server and processes errors
      *
      * @param string $method GET

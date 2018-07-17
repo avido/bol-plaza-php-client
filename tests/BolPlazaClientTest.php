@@ -35,7 +35,7 @@ class BolPlazaClientTest extends TestCase
         $privateKey = getenv('PHP_PRIVKEY');
 
         $this->client = new BolPlazaClient($publicKey, $privateKey);
-        $this->client->setTestMode(true);
+        $this->client->setTestMode(false);
     }
 
     public function testOrderRetrieve()
@@ -515,8 +515,7 @@ class BolPlazaClientTest extends TestCase
      * Get Inbound packing list
      * @see https://developers.bol.com/packing-list-details/
      * Ignored, not present in sandbox 
-     * @groupXXX no-ci-test
-     * @group inbound
+     * @group no-ci-test
      */
     public function testGetPackinglist()
     {
@@ -528,4 +527,18 @@ class BolPlazaClientTest extends TestCase
             $this->fail();
         }
     }
+    
+    /**
+     * @group inbound
+     */
+    public function testGetInbounds()
+    {
+        try {
+            $result = $this->client->getInboundList();
+            $this->assertNotNull($result);
+        } catch (\Exception $ex) {
+            $this->fail();
+        }
+    }
+    
 }
